@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import SideBar from "../assets/Sidebar";
 import MyCalendar from "../assets/Calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import "../css/EventPage.css";
 
 const EventPage = () => {
   const [tasks, setTasks] = useState([
@@ -143,7 +142,7 @@ const EventPage = () => {
             overflow: "hidden",
           }}
         >
-          <MyCalendar setSummary={setSummary} />
+          <MyCalendar />
         </div>
       </div>
     </div>
