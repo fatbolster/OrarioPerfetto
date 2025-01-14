@@ -1,0 +1,33 @@
+.custom-calendar {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    padding: 20px;
+  }
+  .react-calendar__tile {
+    height: 80px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .highlight-date {
+    background-color: #ffecb3 !important;
+    border-radius: 50%;
+    font-weight: bold;
+  }
+  .react-calendar__tile--active {
+    background-color: #82ccdd !important;
+    color: white;
+    border-radius: 10px;
+  }
+  .react-calendar__navigation button {
+    font-size: 18px;
+    padding: 10px;
+  }
+  .react-calendar__month-view__weekdays {
+    font-size: 16px;
+    text-align: center;
+    color: #7f8c8d;
+  }
+  

@@ -1,0 +1,124 @@
+/* General Styles */
+.App {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center the header */
+}
+
+.header {
+  font-size: 2rem;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Content Container */
+.content-container {
+  display: flex;
+  width: 100%;
+  justify-content: space-between; /* Space between left and right sections */
+  gap: 20px;
+}
+
+/* Left Section */
+.left-section {
+  width: 25%; /* Reserve space for future content */
+  background-color: #f7f7f7;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Right Section */
+.right-section {
+  width: 70%;
+}
+
+/* Filter Bar Styles */
+.filter-bar {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: flex-start; /* Align buttons to the left */
+}
+
+/* Other Styles (Unchanged) */
+/* Email Box Styles */
+.email-box {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align emails to the left */
+}
+
+.email-item {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 10px;
+  width: 100%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.email-item:hover {
+  background-color: #f9f9f9;
+}
+
+/* Urgency Tag Styles */
+.urgency-tag {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 5px 15px;
+  border-radius: 15px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+.urgency-tag.urgent {
+  background-color: red;
+}
+
+.urgency-tag.not-urgent {
+  background-color: blue;
+}
+
+/* Email Details Styles */
+.email-details {
+  margin-top: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 20px;
+  background-color: #fdfdfd;
+}
+
+.email-details button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #990011;
+  color: #FCF6F5;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.search-bar {
+  margin-bottom: 20px;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.search-bar input:focus {
+  border-color: #990011; /* Highlight color when focused */
+}
