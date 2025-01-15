@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import "./Login.css"; // Ensure the path to your CSS file is correct
 
 const Login: React.FC = () => {
-  const [selectedRole, setSelectedRole] = useState("firm");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -11,15 +10,29 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const loginData = {
-      type: selectedRole,
-      username,
-      password,
-    };
+    const loginData = { username, password };
 
-    console.log("Login Data Submitted:", loginData);
+    try {
+      const response = await fetch("http://localhost:5001/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(loginData),
+      });
 
-    // Add any additional logic for handling login here
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log("Login successful:", data);
+        localStorage.setItem("token", data.token); // Store JWT token
+        navigate("/"); // Redirect to the home page (or dashboard)
+      } else {
+        console.error("Login failed:", data.message);
+        alert(data.message); // Show an error message to the user
+      }
+    } catch (err) {
+      console.error("Error:", err);
+      alert("An error occurred. Please try again later.");
+    }
   };
 
   return (
