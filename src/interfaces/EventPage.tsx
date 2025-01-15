@@ -1,9 +1,22 @@
 import React, { useState } from "react";
 import SideBar from "../assets/Sidebar";
-import MyCalendar from "../assets/Calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import CalendarComponent from "../assets/Calendar";
+import { useNavigate } from "react-router-dom";
 
 const EventPage = () => {
+  const navigate = useNavigate();
+
+  const handleDateSelection = (date: Date) => {
+    const formattedDate = date.toISOString().split("T")[0];
+    if (mockMeetings[formattedDate]) {
+      // Redirect to the dynamic URL if a meeting exists
+      navigate(`/events/${formattedDate}`);
+    } else {
+      // Optional: Show an alert or message
+      setSummary("No meetings scheduled for this date.");
+    }
+  };
   const [tasks, setTasks] = useState([
     { id: 1, name: "Project 1", completed: false },
     { id: 2, name: "Project 2", completed: false },
@@ -142,7 +155,7 @@ const EventPage = () => {
             overflow: "hidden",
           }}
         >
-          <MyCalendar />
+          <CalendarComponent onDateSelect={handleDateSelection} />
         </div>
       </div>
     </div>

@@ -174,7 +174,6 @@ const StartPage = () => {
     <div className="App">
       {/* Sidebar */}
       <div
-        className="sidebar"
         style={{
           position: "fixed", // Fix the sidebar to the left
           top: 0,
@@ -183,7 +182,7 @@ const StartPage = () => {
           height: "100vh", // Full height of the viewport
           backgroundColor: "#f4f4f4",
           boxShadow: "2px 0 5px rgba(0, 0, 0, 0.1)",
-          padding: "20px",
+          padding: "0px",
         }}
       >
         <SideBar sections={sidebarSections} layoutMode="two-div" />
