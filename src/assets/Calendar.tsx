@@ -1,77 +1,84 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Calendar from "react-calendar";
-import { useNavigate } from "react-router-dom"; // For navigation
+import { fetchWithAuth } from "../api"; // Your utility function for authenticated requests
+import { useNavigate } from "react-router-dom";
 import "react-calendar/dist/Calendar.css";
 import "./Calendar.css";
 
-interface MeetingDetails {
-  date: string;
-  summary: string;
-  peopleInvolved: string[];
-  decisionsMade: string[];
-  outstandingQuestions: string[];
-  concernsRaised: string[];
-  additionalTasks: string[];
-}
-
-const mockMeetingData: Record<string, MeetingDetails> = {
-  "2025-01-15": {
-    date: "2025-01-15",
-    summary: "Discussion on project progress and roadmap adjustments.",
-    peopleInvolved: ["John Doe", "Emma Watson", "Alice Smith"],
-    decisionsMade: [
-      "Extend sprint duration by one week.",
-      "Hire two QA engineers.",
-    ],
-    outstandingQuestions: [
-      "What is the expected delay on deliverables?",
-      "Who will oversee the new testing process?",
-    ],
-    concernsRaised: [
-      "Resource allocation remains unclear.",
-      "Potential impact on integration timelines.",
-    ],
-    additionalTasks: [
-      "Schedule a follow-up meeting.",
-      "Update the project roadmap.",
-    ],
-  },
-  "2025-01-16": {
-    date: "2025-01-16",
-    summary: "Sprint planning for Q1 deliverables.",
-    peopleInvolved: ["Bob Johnson", "Alice Brown"],
-    decisionsMade: ["Prioritize feature X for release.", "Add two engineers."],
-    outstandingQuestions: ["What are the testing dependencies?"],
-    concernsRaised: ["Tight deadlines for module Y."],
-    additionalTasks: ["Schedule stakeholder meeting.", "Prepare test plans."],
-  },
-};
-
 const MyCalendar: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [unavailableDates, setUnavailableDates] = useState<string[]>([]);
+  const [meetingData, setMeetingData] = useState<Record<string, any>>({});
   const navigate = useNavigate();
 
-  // Handles when a date is clicked
+  // Fetch unavailable dates and meeting data on component mount
+  useEffect(() => {
+    const getUnavailableDates = async () => {
+      try {
+        const response = await fetchWithAuth("/api/calendar/unavailable-dates");
+        const data = await response.json();
+        console.log("Fetched unavailable dates:", data.unavailableDates);
+        setUnavailableDates(data.unavailableDates); // Update state
+      } catch (error) {
+        console.error("Error fetching unavailable dates:", error);
+      }
+    };
+
+    getUnavailableDates();
+  }, []);
+
+  // Toggle unavailable dates
+  const handleDateToggle = async (date: Date) => {
+    const formattedDate = date.toISOString().split("T")[0];
+
+    // Update state optimistically
+    setUnavailableDates((prevDates) =>
+      prevDates.includes(formattedDate)
+        ? prevDates.filter((d) => d !== formattedDate)
+        : [...prevDates, formattedDate]
+    );
+
+    try {
+      // Save updated unavailable date to backend
+      await fetchWithAuth("/api/calendar/add-date", {
+        method: "POST",
+        body: JSON.stringify({ date: formattedDate }),
+      });
+      console.log("Date saved successfully");
+    } catch (error) {
+      console.error("Error saving unavailable date:", error);
+    }
+  };
+
+  // Handle clicking on a date
   const handleDateClick = (value: Date | null) => {
     if (value instanceof Date) {
       const formattedDate = value.toISOString().split("T")[0];
       setSelectedDate(value);
 
-      if (mockMeetingData[formattedDate]) {
+      if (meetingData[formattedDate]) {
         navigate(`/details/${formattedDate}`); // Navigate to meeting details page
       } else {
-        alert("No meeting data available for this date."); // No meeting found
+        alert("No meeting data available for this date.");
       }
     }
   };
 
-  // Render function to highlight dates with meetings
+  // Highlight unavailable dates and meeting dates
   const tileClassName = ({ date, view }: { date: Date; view: string }) => {
     if (view === "month") {
       const formattedDate = date.toISOString().split("T")[0];
-      return formattedDate in mockMeetingData ? "highlight-date" : "";
+      console.log(
+        `Checking ${formattedDate} against unavailable dates:`,
+        unavailableDates
+      );
+
+      if (unavailableDates.includes(formattedDate)) {
+        return "unavailable-date"; // Apply this class for unavailable dates
+      }
+      return ""; // Default: no class
     }
-    return "";
+    return ""; // For views other than "month"
   };
 
   return (
@@ -99,16 +106,15 @@ const MyCalendar: React.FC = () => {
         }}
       >
         <Calendar
-          onClickDay={(value) => handleDateClick(value)}
+          onClickDay={(value) => handleDateToggle(value)} // Toggle unavailable dates on click
           value={selectedDate}
-          tileClassName={tileClassName} // Highlight dates with meetings
+          tileClassName={tileClassName} // Highlight unavailable and meeting dates
           selectRange={false}
           className="custom-calendar"
           showNavigation={true}
           showNeighboringMonth={false}
         />
       </div>
-      {/* Display the selected date or meeting summary */}
       <div
         style={{
           marginTop: "20px",
