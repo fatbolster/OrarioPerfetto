@@ -2,20 +2,10 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
 const UserSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  // Array of project ObjectIds referencing the Project schema
-  projects: [{ 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: "Project" 
-  }],
+  username: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  projects: [{ name: String }],
+  calendar: [{ type: String }], // ISO date strings
 });
 
 // Hash password before saving
