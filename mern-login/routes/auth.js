@@ -9,6 +9,7 @@ const router = express.Router();
 router.post("/login", async (req, res) => {
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     const { username, password } = req.body;
   
     console.log("Received username:", username);
@@ -48,6 +49,8 @@ router.post("/login", async (req, res) => {
 =======
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
   const { username, password } = req.body;
 
   console.log("Received username:", username);
@@ -61,6 +64,9 @@ router.post("/login", async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: "Invalid username or password" });
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
