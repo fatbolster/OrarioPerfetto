@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Calendar from "react-calendar";
 import { fetchWithAuth } from "../api"; // Authenticated request utility
-import { useNavigate } from "react-router-dom"; // For navigation
+import { useNavigate } from "react-router-dom";
 import "react-calendar/dist/Calendar.css";
 import "./Calendar.css"; // Ensure this file contains styles for unavailable-date
 
@@ -15,7 +15,7 @@ interface MeetingDetails {
   additionalTasks: string[];
 }
 
-const mockMeetingData: Record<string, MeetingDetails> = {
+const mockMeetingData: Record<string, any> = {
   "2025-01-15": {
     date: "2025-01-15",
     summary: "Discussion on project progress and roadmap adjustments.",
@@ -37,14 +37,47 @@ const mockMeetingData: Record<string, MeetingDetails> = {
       "Update the project roadmap.",
     ],
   },
-  "2025-01-16": {
-    date: "2025-01-16",
-    summary: "Sprint planning for Q1 deliverables.",
-    peopleInvolved: ["Bob Johnson", "Alice Brown"],
-    decisionsMade: ["Prioritize feature X for release.", "Add two engineers."],
-    outstandingQuestions: ["What are the testing dependencies?"],
-    concernsRaised: ["Tight deadlines for module Y."],
-    additionalTasks: ["Schedule stakeholder meeting.", "Prepare test plans."],
+  "2025-01-12": {
+    date: "2025-01-12",
+    summary: "Kick-off meeting for the new product launch.",
+    peopleInvolved: ["Emma Carter", "Liam Adams", "Sophia Turner"],
+    decisionsMade: [
+      "Set the product launch date to March 15, 2025.",
+      "Approve the initial marketing budget.",
+    ],
+    outstandingQuestions: [
+      "What is the expected audience reach for the first phase?",
+      "Are additional partnerships needed for the launch?",
+    ],
+    concernsRaised: [
+      "Tight deadlines for marketing material preparation.",
+      "Limited bandwidth of the design team for launch assets.",
+    ],
+    additionalTasks: [
+      "Create a detailed launch roadmap.",
+      "Organize a meeting with the design and marketing teams.",
+    ],
+  },
+  "2025-01-13": {
+    date: "2025-01-13",
+    summary: "Technical discussion on backend architecture upgrades.",
+    peopleInvolved: ["Noah Harris", "Olivia Gray", "Mason Thomas"],
+    decisionsMade: [
+      "Adopt a microservices-based architecture.",
+      "Allocate two engineers to the database migration project.",
+    ],
+    outstandingQuestions: [
+      "What are the potential risks during migration?",
+      "How will the changes impact existing user workflows?",
+    ],
+    concernsRaised: [
+      "Compatibility issues with older modules.",
+      "Limited time for thorough testing before deployment.",
+    ],
+    additionalTasks: [
+      "Perform a risk assessment for the migration process.",
+      "Set up a testing environment for the new architecture.",
+    ],
   },
 };
 
@@ -67,11 +100,14 @@ const MyCalendar: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    // Log the unavailable dates whenever the state updates
     console.log("Updated unavailable dates in state:", unavailableDates);
   }, [unavailableDates]);
 
+  // Highlight unavailable dates
   const tileClassName = ({ date, view }: { date: Date; view: string }) => {
     if (view === "month") {
+      // Normalize the date to UTC format (YYYY-MM-DD)
       const formattedDate = new Date(
         date.getTime() - date.getTimezoneOffset() * 60000
       )
@@ -79,13 +115,10 @@ const MyCalendar: React.FC = () => {
         .split("T")[0];
 
       if (unavailableDates.includes(formattedDate)) {
-        return "unavailable-date";
-      }
-      if (mockMeetingData[formattedDate]) {
-        return "highlight-date";
+        return "unavailable-date"; // Apply CSS class for unavailable dates
       }
     }
-    return "";
+    return ""; // Default: no class
   };
 
   const handleDateClick = (value: Date | null) => {
@@ -122,8 +155,7 @@ const MyCalendar: React.FC = () => {
       >
         <Calendar
           onClickDay={(value) => handleDateClick(value)}
-          value={selectedDate}
-          tileClassName={tileClassName}
+          tileClassName={tileClassName} // Highlight unavailable dates
           selectRange={false}
           className="custom-calendar"
           showNavigation={true}
