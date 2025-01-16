@@ -11,6 +11,7 @@ router.post("/login", async (req, res) => {
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     const { username, password } = req.body;
   
     console.log("Received username:", username);
@@ -54,6 +55,8 @@ router.post("/login", async (req, res) => {
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
   const { username, password } = req.body;
 
   console.log("Received username:", username);
@@ -69,6 +72,9 @@ router.post("/login", async (req, res) => {
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes

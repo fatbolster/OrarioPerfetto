@@ -4,8 +4,11 @@ import Calendar from "react-calendar";
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import { useNavigate } from "react-router-dom"; // For navigation
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -96,6 +99,7 @@ const mockMeetingData: Record<string, any> = {
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 interface MeetingDetails {
   date: string;
@@ -162,6 +166,11 @@ const MyCalendar: React.FC = () => {
 const MyCalendar: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 >>>>>>> Stashed changes
+=======
+
+const MyCalendar: React.FC = () => {
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+>>>>>>> Stashed changes
   const [unavailableDates, setUnavailableDates] = useState<string[]>([]);
   const navigate = useNavigate();
 
@@ -203,6 +212,9 @@ const MyCalendar: React.FC = () => {
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -227,6 +239,7 @@ const MyCalendar: React.FC = () => {
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   // Render function to highlight dates with meetings
   const tileClassName = ({ date, view }: { date: Date; view: string }) => {
     if (view === "month") {
@@ -236,6 +249,8 @@ const MyCalendar: React.FC = () => {
     return "";
   };
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -269,8 +284,12 @@ const MyCalendar: React.FC = () => {
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
           value={selectedDate}
           tileClassName={tileClassName} // Highlight dates with meetings
+=======
+          tileClassName={tileClassName} // Highlight unavailable dates
+>>>>>>> Stashed changes
 =======
           tileClassName={tileClassName} // Highlight unavailable dates
 >>>>>>> Stashed changes
