@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./Login.css"; // Ensure the path to your CSS file is correct
+import "./Login.css";
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState("");
@@ -21,17 +21,26 @@ const Login: React.FC = () => {
 
       const data = await response.json();
 
+      console.log("Login response:", data); // Debugging
+
       if (response.ok) {
         console.log("Login successful:", data);
-        localStorage.setItem("token", data.token); // Store JWT token
-        navigate("/"); // Redirect to the home page (or dashboard)
+        if (data.token) {
+          localStorage.setItem("authToken", data.token); // Store JWT token
+          navigate("/home"); // Redirect to the home page (or dashboard)
+        } else {
+          console.error("No token provided in response");
+          alert("Login succeeded but no token was returned.");
+        }
       } else {
         console.error("Login failed:", data.message);
-        alert(data.message); // Show an error message to the user
+        alert(data.message || "Login failed. Please check your credentials.");
       }
     } catch (err) {
-      console.error("Error:", err);
-      alert("An error occurred. Please try again later.");
+      console.error("Error during login:", err);
+      alert(
+        "An error occurred while trying to log in. Please try again later."
+      );
     }
   };
 

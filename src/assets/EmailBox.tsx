@@ -1,3 +1,5 @@
+import "./EmailBox.css";
+
 type Email = {
   id: number;
   subject: string;
@@ -24,9 +26,13 @@ const EmailBox = ({ emails, setSelectedEmail }: EmailBoxProps) => {
             onClick={() => setSelectedEmail(email)}
           >
             <h3>{email.subject}</h3>
-            <p>{email.summary}</p>
-            <span className={`urgency-tag ${email.urgency.toLowerCase()}`}>
-              {email.urgency}
+            {/* Ensure the urgency class is consistent with CSS */}
+            <span
+              className={`urgency-tag ${email.urgency
+                .toLowerCase()
+                .replace(" ", "-")}`}
+            >
+              {email.urgency.toUpperCase()}
             </span>
           </div>
         ))
@@ -34,4 +40,5 @@ const EmailBox = ({ emails, setSelectedEmail }: EmailBoxProps) => {
     </div>
   );
 };
+
 export default EmailBox;

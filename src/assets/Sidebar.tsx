@@ -56,7 +56,7 @@ const styles = {
     height: "100vh",
     backgroundColor: "#fff",
     boxShadow: "2px 0 5px rgba(0,0,0,0.1)",
-    padding: "20px",
+    padding: "12px",
     boxSizing: "border-box" as "border-box",
     display: "flex",
     flexDirection: "column" as "column",

@@ -1,8 +1,10 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Sidebar from "../assets/Sidebar"; // Import Sidebar component
+import "../css/MeetingDetailsPage.css"; // Import CSS file
 
-const mockMeetingData = {
+// Mock Meeting Data
+const mockMeetingData: Record<string, any> = {
   "2025-01-15": {
     date: "2025-01-15",
     summary: "Discussion on project progress and roadmap adjustments.",
@@ -24,28 +26,67 @@ const mockMeetingData = {
       "Update the project roadmap.",
     ],
   },
-  "2025-01-16": {
-    date: "2025-01-16",
-    summary: "Sprint planning for Q1 deliverables.",
-    peopleInvolved: ["Bob Johnson", "Alice Brown"],
-    decisionsMade: ["Prioritize feature X for release.", "Add two engineers."],
-    outstandingQuestions: ["What are the testing dependencies?"],
-    concernsRaised: ["Tight deadlines for module Y."],
-    additionalTasks: ["Schedule stakeholder meeting.", "Prepare test plans."],
+  "2025-01-12": {
+    date: "2025-01-12",
+    summary: "Kick-off meeting for the new product launch.",
+    peopleInvolved: ["Emma Carter", "Liam Adams", "Sophia Turner"],
+    decisionsMade: [
+      "Set the product launch date to March 15, 2025.",
+      "Approve the initial marketing budget.",
+    ],
+    outstandingQuestions: [
+      "What is the expected audience reach for the first phase?",
+      "Are additional partnerships needed for the launch?",
+    ],
+    concernsRaised: [
+      "Tight deadlines for marketing material preparation.",
+      "Limited bandwidth of the design team for launch assets.",
+    ],
+    additionalTasks: [
+      "Create a detailed launch roadmap.",
+      "Organize a meeting with the design and marketing teams.",
+    ],
+  },
+  "2025-01-13": {
+    date: "2025-01-13",
+    summary: "Technical discussion on backend architecture upgrades.",
+    peopleInvolved: ["Noah Harris", "Olivia Gray", "Mason Thomas"],
+    decisionsMade: [
+      "Adopt a microservices-based architecture.",
+      "Allocate two engineers to the database migration project.",
+    ],
+    outstandingQuestions: [
+      "What are the potential risks during migration?",
+      "How will the changes impact existing user workflows?",
+    ],
+    concernsRaised: [
+      "Compatibility issues with older modules.",
+      "Limited time for thorough testing before deployment.",
+    ],
+    additionalTasks: [
+      "Perform a risk assessment for the migration process.",
+      "Set up a testing environment for the new architecture.",
+    ],
   },
 };
 
 const MeetingDetailsPage: React.FC = () => {
-  const { date } = useParams<{ date: string }>();
-  const meeting = mockMeetingData[date || ""];
-
+  const { date } = useParams<{ date: string }>(); // Get date from URL
   const navigate = useNavigate();
 
+  const meeting = mockMeetingData[date || ""]; // Access meeting data by date
+
   if (!meeting) {
-    return <h2>No meeting data available for {date}</h2>;
+    return (
+      <div className="no-meeting-container">
+        <h2>No meeting data available for {date}</h2>
+        <button className="back-button" onClick={() => navigate("/")}>
+          Back to Calendar
+        </button>
+      </div>
+    );
   }
 
-  // Sidebar content
   const sidebarSections = [
     {
       title: "Profile Overview",
@@ -66,43 +107,9 @@ const MeetingDetailsPage: React.FC = () => {
     {
       title: "Project 1",
       content: (
-        <div style={{ padding: "10px", fontSize: "14px", color: "#333" }}>
-          <div style={{ marginBottom: "10px" }}>
-            <strong>Description:</strong> Redesign the company website to
-            improve user experience and accessibility.
-          </div>
-          <div>
-            <strong>People Involved:</strong>
-            <div
-              style={{
-                display: "flex",
-                flexWrap: "wrap",
-                gap: "10px",
-                marginTop: "10px",
-              }}
-            >
-              {["John Doe", "Alice Smith", "Emma Watson"].map((person, idx) => (
-                <button
-                  key={idx}
-                  style={{
-                    padding: "8px 12px",
-                    backgroundColor: "#007bff",
-                    color: "#fff",
-                    border: "none",
-                    cursor: "pointer",
-                    fontSize: "14px",
-                    fontWeight: "bold",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                  }}
-                  onClick={() => alert(`Clicked on ${person}`)} // Example click handler
-                >
-                  <span>{person}</span>
-                </button>
-              ))}
-            </div>
-          </div>
+        <div>
+          <strong>Description:</strong> Redesign the company website to improve
+          user experience and accessibility.
         </div>
       ),
     },
@@ -111,130 +118,72 @@ const MeetingDetailsPage: React.FC = () => {
       content: (
         <div>
           <ul>
-            <li>Create Wireframes </li>
+            <li>Create Wireframes</li>
             <li>Develop Landing Page</li>
           </ul>
-          <div style={{ marginTop: "10px", textAlign: "center" }}>
-            <button
-              onClick={() => navigate("/event")}
-              style={{
-                padding: "8px 15px",
-                backgroundColor: "#ff0000", // Red color
-                color: "#fff", // White text for contrast
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer",
-                fontSize: "14px",
-              }}
-            >
-              {" "}
-              Back
-            </button>
-          </div>
+          <button className="back-button" onClick={() => navigate("/")}>
+            Back
+          </button>
         </div>
       ),
     },
   ];
 
   return (
-    <div
-      style={{
-        display: "flex",
-        height: "100vh",
-        overflow: "hidden", // Prevent unwanted scrolling
-      }}
-    >
+    <div className="meeting-page-container">
       {/* Sidebar */}
       <Sidebar sections={sidebarSections} layoutMode="three-div" />
 
       {/* Main Content */}
-      <div
-        style={{
-          flex: 1, // Occupy remaining width
-          padding: "20px",
-          backgroundColor: "#000", // Black background
-          color: "#fff", // White text for readability
-          overflowY: "auto", // Enable vertical scrolling if content overflows
-        }}
-      >
-        <h2 style={{ marginBottom: "20px", color: "#fff" }}>
-          AI Summary of Meeting
-        </h2>
-
-        {/* AI Summary Section */}
-        <div style={{ marginBottom: "20px" }}>
-          <h3 style={{ marginBottom: "10px", color: "#fff" }}>AI Summary</h3>
-          <p style={{ fontSize: "16px", lineHeight: "1.6", color: "#fff" }}>
-            {meeting.summary}
-          </p>
+      <div className="main-content">
+        <div className="section">
+          <h2>AI Summary of Meeting</h2>
+          <p>{meeting.summary}</p>
         </div>
 
-        {/* People Involved Section */}
-        <div style={{ marginBottom: "20px" }}>
-          <h3 style={{ marginBottom: "10px", color: "#fff" }}>
-            People Involved
-          </h3>
+        <div className="section">
+          <h3>People Involved</h3>
           <ul>
-            {meeting.peopleInvolved.map((person, idx) => (
-              <li key={idx} style={{ color: "#fff" }}>
-                {person}
-              </li>
+            {meeting.peopleInvolved.map((person: string, idx: number) => (
+              <li key={idx}>{person}</li>
             ))}
           </ul>
         </div>
 
-        {/* Decisions Made Section */}
-        <div style={{ marginBottom: "20px" }}>
-          <h3 style={{ marginBottom: "10px", color: "#fff" }}>
-            Decisions Made
-          </h3>
+        <div className="section">
+          <h3>Decisions Made</h3>
           <ul>
-            {meeting.decisionsMade.map((decision, idx) => (
-              <li key={idx} style={{ color: "#fff" }}>
-                {decision}
-              </li>
+            {meeting.decisionsMade.map((decision: string, idx: number) => (
+              <li key={idx}>{decision}</li>
             ))}
           </ul>
         </div>
 
-        {/* Outstanding Questions Section */}
-        <div style={{ marginBottom: "20px" }}>
-          <h3 style={{ marginBottom: "10px", color: "#fff" }}>
-            Outstanding Questions
-          </h3>
+        <div className="section">
+          <h3>Outstanding Questions</h3>
           <ul>
-            {meeting.outstandingQuestions.map((question, idx) => (
-              <li key={idx} style={{ color: "#fff" }}>
-                {question}
-              </li>
+            {meeting.outstandingQuestions.map(
+              (question: string, idx: number) => (
+                <li key={idx}>{question}</li>
+              )
+            )}
+          </ul>
+        </div>
+
+        <div className="section">
+          <h3>Concerns Raised</h3>
+          <ul>
+            {meeting.concernsRaised.map((concern: string, idx: number) => (
+              <li key={idx}>{concern}</li>
             ))}
           </ul>
         </div>
 
-        {/* Concerns Raised Section */}
-        <div style={{ marginBottom: "20px" }}>
-          <h3 style={{ marginBottom: "10px", color: "#fff" }}>
-            Concerns Raised
-          </h3>
+        <div className="section">
+          <h3>Additional Tasks</h3>
           <ul>
-            {meeting.concernsRaised.map((concern, idx) => (
-              <li key={idx} style={{ color: "#fff" }}>
-                {concern}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Additional Tasks Section */}
-        <div>
-          <h3 style={{ marginBottom: "10px", color: "#fff" }}>
-            Additional Tasks
-          </h3>
-          <ul>
-            {meeting.additionalTasks.map((task, idx) => (
-              <li key={idx} style={{ color: "#fff" }}>
-                {task}
-              </li>
+            {meeting.additionalTasks.map((task: string, idx: number) => (
+              <li key={idx}>{task}</li>
             ))}
           </ul>
         </div>

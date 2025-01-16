@@ -1,0 +1,54 @@
+/* Updated button styles to ensure equal size */
+.filter-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* Adds spacing between the buttons */
+  }
+  
+  .filter-button {
+    padding: 10px 20px; /* Consistent padding for all buttons */
+    width: 100px; /* Set a fixed width to ensure uniform size */
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.2s;
+    color: white; /* Ensures text color contrast */
+  }
+  
+  .filter-button.all {
+    background-color: #007bff; /* Blue for 'All' */
+    border-color: #0056b3;
+  }
+  
+  .filter-button.urgent {
+    background-color: #d9534f; /* Red for 'Urgent' */
+    border-color: #b52b1f;
+  }
+  
+  .filter-button.mildly-urgent {
+    background-color: #f0ad4e; /* Yellow for 'Mildly Urgent' */
+    border-color: #d98508;
+  }
+  
+  .filter-button.not-urgent {
+    background-color: #5cb85c; /* Green for 'Not Urgent' */
+    border-color: #4cae4c;
+  }
+  
+  /* Add hover effects for buttons */
+  .filter-button:hover {
+    transform: scale(1.05);
+    filter: brightness(0.9);
+  }
+  
+  .filter-button.active {
+    transform: scale(1.05);
+  }
+  
+  /* Ensure email list appears below buttons */
+  .email-list-container {
+    margin-top: 20px;
+  }
+  

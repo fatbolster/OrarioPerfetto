@@ -26,7 +26,6 @@ const StartPage = () => {
   const navigateToEvent = () => {
     navigate("/event"); // Navigate to the /event route
   };
-
   const mockEmails: Email[] = [
     {
       id: 1,
@@ -35,6 +34,11 @@ const StartPage = () => {
       urgency: "Urgent",
       content:
         "Dear Team, The project deadline is tomorrow. Please review and submit all files.",
+      longversion: {
+        from: "AliceJohnson@example.com",
+        to: "JohnDoe@example.com",
+        body: "Dear Team,\n\nThe project deadline is tomorrow. Please review and submit all files by the end of the day. Your prompt attention to this matter is highly appreciated.",
+      },
     },
     {
       id: 2,
@@ -43,6 +47,11 @@ const StartPage = () => {
       urgency: "Not Urgent",
       content:
         "Hi Team, We have a team meeting scheduled for next week to discuss the project roadmap.",
+      longversion: {
+        from: "MichaelSmith@example.com",
+        to: "JohnDoe@example.com",
+        body: "Dear Team,\n\nI hope this email finds you well. This is a friendly but urgent reminder that the project deadline is tomorrow. Your prompt action is crucial to ensure that all tasks are completed successfully and on time.",
+      },
     },
   ];
 
@@ -53,11 +62,14 @@ const StartPage = () => {
 
   const applyFilter = (filter: string) => {
     setFilter(filter);
-    if (filter === "All") {
-      setFilteredEmails(mockEmails);
-    } else {
-      setFilteredEmails(emails.filter((email) => email.urgency === filter));
-    }
+
+    // Filter emails based on the selected urgency
+    const filtered =
+      filter === "All"
+        ? emails
+        : emails.filter((email) => email.urgency === filter);
+
+    setFilteredEmails(filtered);
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,7 +113,14 @@ const StartPage = () => {
     {
       title: "Events",
       content: (
-        <div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between", // Ensures spacing between sections
+            height: "100%",
+          }}
+        >
           {/* Urgent Tasks */}
           <div
             style={{
@@ -111,7 +130,7 @@ const StartPage = () => {
               padding: "10px",
             }}
           >
-            <h4 style={{ color: "#721c24", margin: 0 }}>Urgent</h4>
+            <h4 style={{ color: "#721c24", margin: 0 }}> Urgent</h4>
             <ul>
               <li>Complete this task immediately!</li>
               <li>Respond to the client's email now!</li>
@@ -139,6 +158,7 @@ const StartPage = () => {
             style={{
               border: "3px solid #c3e6cb",
               borderRadius: "5px",
+              marginBottom: "10px",
               padding: "10px",
             }}
           >
@@ -150,7 +170,12 @@ const StartPage = () => {
           </div>
 
           {/* Button */}
-          <div style={{ marginTop: "10px" }}>
+          <div
+            style={{
+              marginTop: "auto", // Pushes the button to the bottom of the content
+              textAlign: "center", // Centers the button horizontally
+            }}
+          >
             <button
               onClick={() => navigateToEvent()}
               style={{
@@ -210,7 +235,11 @@ const StartPage = () => {
                 onChange={handleSearchChange}
               />
             </div>
-            <FilterBar filter={filter} applyFilter={applyFilter} />
+            <FilterBar
+              emails={mockEmails}
+              filter={filter}
+              applyFilter={applyFilter}
+            />
 
             {!selectedEmail ? (
               <EmailBox

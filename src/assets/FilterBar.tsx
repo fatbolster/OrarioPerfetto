@@ -1,29 +1,50 @@
+import React, { useEffect, useState } from "react";
+import "./FilterBar.css";
+
+type Email = {
+  id: number;
+  subject: string;
+  summary: string;
+  urgency: string;
+};
+
 type FilterBarProps = {
+  emails: Email[];
   filter: string;
   applyFilter: (filter: string) => void;
 };
 
-const FilterBar = ({ filter, applyFilter }: FilterBarProps) => {
+const FilterBar: React.FC<FilterBarProps> = ({
+  emails,
+  filter,
+  applyFilter,
+}) => {
+  const [urgencyOrder, setUrgencyOrder] = useState<string[]>([]);
+
+  useEffect(() => {
+    // Fixed order of urgencies
+    const predefinedOrder = ["Urgent", "Mildly Urgent", "Not Urgent"];
+
+    // Ensure all predefined urgencies are included, even if no emails match
+    setUrgencyOrder(["All", ...predefinedOrder]);
+  }, []);
+
   return (
     <div className="filter-bar">
-      <button
-        onClick={() => applyFilter("All")}
-        className={filter === "All" ? "active" : ""}
-      >
-        All
-      </button>
-      <button
-        onClick={() => applyFilter("Urgent")}
-        className={filter === "Urgent" ? "active" : ""}
-      >
-        Urgent
-      </button>
-      <button
-        onClick={() => applyFilter("Not Urgent")}
-        className={filter === "Not Urgent" ? "active" : ""}
-      >
-        Not urgent
-      </button>
+      {/* Filter Buttons */}
+      <div className="filter-buttons">
+        {urgencyOrder.map((urgency) => (
+          <button
+            key={urgency}
+            onClick={() => applyFilter(urgency)}
+            className={`filter-button ${
+              filter === urgency ? "active" : ""
+            } ${urgency.toLowerCase().replace(" ", "-")}`}
+          >
+            {urgency}
+          </button>
+        ))}
+      </div>
     </div>
   );
 };

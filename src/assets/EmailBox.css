@@ -1,0 +1,101 @@
+/* EmailBox.css */
+
+/* General styles for the email box */
+.email-box {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 10px;
+    margin-top: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    height: 300px; /* Fixed height */
+    overflow-y: auto; /* Scroll if content overflows */
+  }
+  
+  /* Message when no emails are available */
+  .email-box p {
+    margin: 0;
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+    align-self: center;
+  }
+  
+  /* Individual email item styles */
+  .email-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .email-item:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Styling for the email text content */
+  .email-item h3 {
+    font-size: 18px;
+    margin: 0;
+    color: #333;
+  }
+  
+  .email-item p {
+    margin: 5px 0 0;
+    font-size: 14px;
+    color: #666;
+  }
+  
+  /* Urgency tags */
+  .urgency-tag {
+    font-size: 12px;
+    font-weight: bold;
+    padding: 6px 10px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  
+  /* Specific urgency styles */
+  .urgency-tag.urgent {
+    background-color: #d9534f; /* Red */
+    color: #fff;
+  }
+  
+  .urgency-tag.mildly-urgent {
+    background-color: #f0ad4e; /* Yellow */
+    color: #fff;
+  }
+  
+  .urgency-tag.not-urgent {
+    background-color: #5cb85c; /* Green */
+    color: #fff;
+  }
+  
+  /* Optional: Add responsiveness */
+  @media (max-width: 768px) {
+    .email-item {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .urgency-tag {
+      margin-top: 10px;
+      align-self: flex-end;
+    }
+  }
+
+  .email-details-buttons {
+    display: flex;
+    gap: 10px; /* Space between buttons */
+    margin-top: 20px;
+  }
+  

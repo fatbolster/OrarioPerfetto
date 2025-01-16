@@ -25,8 +25,12 @@ router.post("/add-project", verifyToken, async (req, res) => {
 
 // Add a date to the calendar
 router.post("/add-date", verifyToken, async (req, res) => {
-  const { date } = req.body;
+  const { dates } = req.body; // Use `dates` for an array
   const userId = req.user.id;
+
+  if (!dates || !Array.isArray(dates)) {
+    return res.status(400).json({ message: "Invalid dates format" });
+  }
 
   try {
     const user = await User.findById(userId);
@@ -34,12 +38,14 @@ router.post("/add-date", verifyToken, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    user.calendar.push(date); // Ensure `calendar` exists in your User schema
+    // Ensure `calendar` is an array and add unique dates
+    user.calendar = [...new Set([...user.calendar, ...dates])];
     await user.save();
 
-    res.status(201).json({ message: "Date added successfully!" });
+    res.status(201).json({ message: "Dates added successfully!" });
   } catch (error) {
-    res.status(500).json({ message: "Error adding date", error });
+    console.error("Error adding dates:", error);
+    res.status(500).json({ message: "Error adding dates", error });
   }
 });
 

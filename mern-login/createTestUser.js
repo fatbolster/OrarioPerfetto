@@ -26,6 +26,7 @@ const createTestUser = async () => {
   console.log("Hashed password:", hashedPassword);
 
   try {
+<<<<<<< Updated upstream
     // Upsert user (update if exists, otherwise create new)
     const user = await User.findOneAndUpdate(
       { username },
@@ -34,6 +35,27 @@ const createTestUser = async () => {
     );
 
     console.log("Test user created or updated:", user);
+=======
+    // Create a new user
+    const newUser = new User({
+      username: "Javier",
+      password: "Password123", // Plain-text password
+      projects: [{ name: "Test Project" }],
+      calendar: ["2025-01-21", "2025-01-22"], // Valid ISO dates
+    });
+
+    await newUser.save();
+    console.log("Test user created:", newUser);
+
+    // Test password comparisonJavier
+    const isMatch = await newUser.comparePassword("securePassword123");
+    console.log("Password match:", isMatch); // Should log: true
+
+    const invalidMatch = await newUser.comparePassword("wrongPassword");
+    console.log("Password match for invalid password:", invalidMatch); // Should log: false
+
+    process.exit(0); // Exit the script when done
+>>>>>>> Stashed changes
   } catch (err) {
     console.error("Error creating test user:", err);
   }

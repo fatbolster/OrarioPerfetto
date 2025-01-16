@@ -1,22 +1,179 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SideBar from "../assets/Sidebar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import CalendarComponent from "../assets/Calendar";
 import { useNavigate } from "react-router-dom";
+import { fetchWithAuth } from "../api";
 
 const EventPage = () => {
   const navigate = useNavigate();
   const [meetingTitle, setMeetingTitle] = useState<string>("");
   const [selectedTeamMembers, setSelectedTeamMembers] = useState<string[]>([]);
   const [selectedMeetingDate, setSelectedMeetingDate] = useState<string[]>([]);
+  const [showPopup, setShowPopup] = useState<boolean>(false);
+
+  const [availableDates, setAvailableDates] = useState<string[]>([]);
+  const [unavailableDates, setUnavailableDates] = useState<string[]>([]);
+
+  const [teamMembers, setTeamMembers] = useState<TeamMemberAvailability[]>([
+    {
+      name: "James",
+      unavailableDates: [
+        "2025-01-03",
+        "2025-01-05",
+        "2025-01-07",
+        "2025-01-10",
+        "2025-01-16",
+        "2025-01-17",
+        "2025-01-19",
+        "2025-01-23",
+        "2025-01-26",
+      ],
+    },
+    {
+      name: "Tom",
+      unavailableDates: [
+        "2025-01-02",
+        "2025-01-06",
+        "2025-01-08",
+        "2025-01-11",
+        "2025-01-20",
+        "2025-01-21",
+        "2025-01-22",
+        "2025-01-25",
+        "2025-01-28",
+      ],
+    },
+    {
+      name: "Alice",
+      unavailableDates: [
+        "2025-01-01",
+        "2025-01-04",
+        "2025-01-09",
+        "2025-01-13",
+        "2025-01-18",
+        "2025-01-24",
+        "2025-01-27",
+        "2025-01-29",
+      ],
+    },
+    {
+      name: "Emma",
+      unavailableDates: [
+        "2025-01-03",
+        "2025-01-06",
+        "2025-01-09",
+        "2025-01-12",
+        "2025-01-15",
+        "2025-01-20",
+        "2025-01-25",
+      ],
+    },
+    {
+      name: "Michael",
+      unavailableDates: [
+        "2025-01-02",
+        "2025-01-05",
+        "2025-01-08",
+        "2025-01-14",
+        "2025-01-18",
+        "2025-01-22",
+        "2025-01-27",
+        "2025-01-28",
+      ],
+    },
+    {
+      name: "Sophia",
+      unavailableDates: [
+        "2025-01-07",
+        "2025-01-10",
+        "2025-01-13",
+        "2025-01-17",
+        "2025-01-21",
+        "2025-01-26",
+      ],
+    },
+  ]);
+
+  useEffect(() => {
+    const fetchUnavailableDates = async () => {
+      try {
+        const response = await fetchWithAuth("/calendar/unavailable-dates");
+
+        if (response.ok) {
+          const data = await response.json();
+
+          // Extract the array of unavailable dates from the response
+          if (data && Array.isArray(data.unavailableDates)) {
+            setUnavailableDates(data.unavailableDates);
+            initializeAvailableDates(data.unavailableDates); // Pass the array of dates
+          } else {
+            console.error(
+              "Unexpected data format for unavailable dates:",
+              data
+            );
+          }
+        } else {
+          console.error(
+            "Failed to fetch unavailable dates:",
+            response.statusText
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching unavailable dates:", error);
+      }
+    };
+
+    fetchUnavailableDates();
+  }, []);
+
+  const initializeAvailableDates = (unavailableDates: string[]) => {
+    const startDate = new Date("2025-01-01");
+    const endDate = new Date("2025-01-31");
+    const allDates: string[] = [];
+
+    for (let d = startDate; d <= endDate; d.setDate(d.getDate() + 1)) {
+      const dateStr = new Date(d).toISOString().split("T")[0];
+      if (!unavailableDates.includes(dateStr)) {
+        allDates.push(dateStr);
+      }
+    }
+
+    setAvailableDates(allDates);
+  };
 
   const toggleTeamMemberSelection = (memberName: string) => {
-    setSelectedTeamMembers(
-      (prev) =>
-        prev.includes(memberName)
-          ? prev.filter((m) => m !== memberName) // Remove if already selected
-          : [...prev, memberName] // Add if not already selected
-    );
+    setSelectedTeamMembers((prev) => {
+      const updatedSelection = prev.includes(memberName)
+        ? prev.filter((m) => m !== memberName)
+        : [...prev, memberName];
+
+      updateAvailableDatesForMembers(updatedSelection);
+      return updatedSelection;
+    });
+  };
+
+  const updateAvailableDatesForMembers = (selectedMembers: string[]) => {
+    const startDate = new Date("2025-01-01");
+    const endDate = new Date("2025-01-31");
+    const allDates: string[] = [];
+
+    for (let d = startDate; d <= endDate; d.setDate(d.getDate() + 1)) {
+      const dateStr = new Date(d).toISOString().split("T")[0];
+
+      const isUnavailableByUser = unavailableDates.includes(dateStr);
+      const isUnavailableByMembers = teamMembers.some(
+        (member) =>
+          selectedMembers.includes(member.name) &&
+          member.unavailableDates.includes(dateStr)
+      );
+
+      if (!isUnavailableByUser && !isUnavailableByMembers) {
+        allDates.push(dateStr);
+      }
+    }
+
+    setAvailableDates(allDates);
   };
 
   const toggleMeetingDateSelection = (date: string) => {
@@ -28,105 +185,14 @@ const EventPage = () => {
     );
   };
 
-  const [selectedDate, setSelectedDate] = useState<Date>(
-    new Date("2025-01-15T00:00:00")
-  );
-
-  const [availableDates, setAvailableDates] = useState<string[]>([]);
-
-  const [selectedTimeFrame, setSelectedTimeFrame] = useState<string>("1 week");
-  const [meetings, setMeetings] = useState<Record<string, MeetingDetails>>({});
-  const [timeFrame, setTimeFrame] = useState<number>(1);
-  const [teamMembers, setTeamMembers] = useState<TeamMemberAvailability[]>([
-    {
-      name: "James",
-      unavailableDates: ["2025-01-16", "2025-01-17", "2025-01-19"],
-    },
-    {
-      name: "Tom",
-      unavailableDates: ["2025-01-20", "2025-01-21", "2025-01-22"],
-    },
-    { name: "Alice", unavailableDates: ["2025-01-18"] },
-    { name: "Emma", unavailableDates: ["2025-01-25"] },
-    { name: "Michael", unavailableDates: ["2025-01-27", "2025-01-28"] },
-    { name: "Sophia", unavailableDates: [] },
-  ]);
-
-  const handleDateSelection = (date: Date) => {
-    const formattedDate = date.toISOString().split("T")[0];
-    if (mockMeetings[formattedDate]) {
-      // Redirect to the dynamic URL if a meeting exists
-      navigate(`/event/${formattedDate}`);
-    } else {
-      // Optional: Show an alert or message
-      setSummary("No meetings scheduled for this date.");
-    }
-  };
-  const [tasks, setTasks] = useState([
-    { id: 1, name: "Project 1", completed: false },
-    { id: 2, name: "Project 2", completed: false },
-    { id: 3, name: "Admin Work", completed: false },
-  ]);
-  const [showPopup, setShowPopup] = useState<boolean>(false);
-
-  const [summary, setSummary] = useState<string>(
-    "Select a date to view the summary."
-  );
-
-  const findAvailableDates = (): string[] => {
-    const today = new Date("2025-01-15");
-    const allDates = Array.from(
-      { length: 31 },
-      (_, i) =>
-        new Date(today.getFullYear(), today.getMonth(), today.getDate() + i)
-    );
-
-    const startDay = today;
-    const endDay = new Date(today);
-    endDay.setDate(today.getDate() + timeFrame * 7);
-
-    const validDates = allDates
-      .filter((date) => date >= startDay && date <= endDay)
-      .map((date) => date.toISOString().split("T")[0])
-      .filter(
-        (date) =>
-          !teamMembers.some(
-            (member) =>
-              selectedTeamMembers.includes(member.name) &&
-              member.unavailableDates.includes(date)
-          )
-      );
-
-    if (validDates.length === 0) {
-      setTimeFrame((prev) => prev + 1);
-      return [];
-    }
-
-    return validDates;
-  };
-
-  const handleTaskToggle = (id: number) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task
-      )
-    );
-  };
-
-  const handleCreateProject = () => {
-    const dates = findAvailableDates();
-    setAvailableDates(dates);
-    setShowPopup(true);
-  };
-
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!meetingTitle) {
       alert("Please enter a meeting title.");
       return;
     }
 
-    if (!selectedMeetingDate) {
-      alert("Please select a meeting date.");
+    if (selectedMeetingDate.length === 0) {
+      alert("Please select at least one meeting date.");
       return;
     }
 
@@ -135,27 +201,23 @@ const EventPage = () => {
       return;
     }
 
-    // Add the meeting to the meetings state
-    const newMeeting = {
-      title: meetingTitle,
-      date: selectedMeetingDate,
-      members: selectedTeamMembers,
-    };
+    try {
+      const response = await fetchWithAuth("/calendar/add-dates", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ date: selectedMeetingDate }),
+      });
 
-    setMeetings((prevMeetings) => ({
-      ...prevMeetings,
-      [selectedMeetingDate]: newMeeting,
-    }));
-
-    alert(
-      `Meeting '${meetingTitle}' scheduled successfully on ${selectedMeetingDate}`
-    );
-
-    // Reset form fields and close popup
-    setMeetingTitle("");
-    setSelectedMeetingDate(null);
-    setSelectedTeamMembers([]);
-    setShowPopup(false);
+      if (response.ok) {
+        alert(`Meeting '${meetingTitle}' scheduled successfully!`);
+        setShowPopup(false);
+      } else {
+        const errorData = await response.json();
+        alert(`Failed to schedule meeting: ${errorData.message}`);
+      }
+    } catch (error) {
+      alert(error.message || "An unexpected error occurred.");
+    }
   };
 
   const sidebarSections = [
@@ -179,104 +241,55 @@ const EventPage = () => {
       title: "Current Projects",
       content: (
         <div>
-          {tasks.map((task) => (
-            <div
-              key={task.id}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                marginBottom: "5px",
-              }}
-            >
-              <input
-                type="checkbox"
-                checked={task.completed}
-                onChange={() => handleTaskToggle(task.id)}
-                style={{ marginRight: "10px" }}
-              />
-              <span
-                style={{
-                  color:
-                    task.id === 1 ? "red" : task.id === 2 ? "blue" : "black",
-                }}
-              >
-                {task.name}
-              </span>
-            </div>
-          ))}
+          <p>Project 1</p>
+          <p>Project 2</p>
         </div>
       ),
     },
     {
       title: "Create Project",
       content: (
-        <div>
-          <button
-            onClick={handleCreateProject}
-            style={{
-              padding: "10px 15px",
-              backgroundColor: "#28a745",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
-          >
-            Create Project
-          </button>
-        </div>
+        <button
+          onClick={() => setShowPopup(true)}
+          style={{
+            padding: "10px 15px",
+            backgroundColor: "#28a745",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+          }}
+        >
+          Create Project
+        </button>
       ),
     },
   ];
 
   return (
-    <div
-      style={{
-        display: "flex",
-        height: "100vh",
-        overflow: "hidden", // Prevent any unwanted scrolling
-      }}
-    >
-      {/* Sidebar */}
+    <div style={{ display: "flex", height: "100vh" }}>
       <div
         style={{
-          position: "fixed", // Sidebar is fixed
-          width: "250px", // Fixed width for the sidebar
+          position: "fixed",
+          width: "250px",
           height: "100vh",
           backgroundColor: "#f4f4f4",
         }}
       >
-        <SideBar sections={sidebarSections} layoutMode="three-div" />
+        <SideBar sections={sidebarSections} />
       </div>
-
-      {/* Main Content */}
       <div
         style={{
-          marginLeft: "250px", // Leave space for the fixed sidebar
-          flex: 1, // Occupy the remaining width
+          marginLeft: "250px",
+          flex: 1,
           display: "flex",
-          justifyContent: "center", // Center the calendar horizontally
-          alignItems: "center", // Center the calendar vertically
+          justifyContent: "center",
+          alignItems: "center",
           backgroundColor: "#2b2b2b",
         }}
       >
-        {/* Calendar Container */}
-        <div
-          style={{
-            width: "80%", // Occupy 80% of the remaining space
-            maxWidth: "1200px", // Optional: Limit the width
-            height: "80vh",
-            backgroundColor: "#fff",
-            borderRadius: "10px",
-            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-            overflow: "hidden",
-          }}
-        >
-          <CalendarComponent onDateSelect={handleDateSelection} />
-        </div>
+        <CalendarComponent />
       </div>
-
-      {/* Popup Component */}
       {showPopup && (
         <div
           style={{
@@ -284,72 +297,44 @@ const EventPage = () => {
             top: "20%",
             left: "50%",
             transform: "translate(-50%, -20%)",
-            backgroundColor: "#ffffff",
+            backgroundColor: "#fff",
             padding: "30px",
             borderRadius: "10px",
             boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
-            zIndex: 1000,
-            width: "400px",
           }}
         >
-          <h3
-            style={{
-              marginBottom: "20px",
-              textAlign: "center",
-              color: "#000", // Black font
-              fontWeight: "bold",
-            }}
-          >
+          <h3 style={{ marginBottom: "20px", textAlign: "center" }}>
             Schedule a Meeting
           </h3>
           <div style={{ marginBottom: "15px" }}>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "10px",
-                fontWeight: "bold",
-                color: "#000", // Black font
-              }}
-            >
-              Meeting Title
-            </label>
+            <label>Meeting Title</label>
             <input
               type="text"
-              placeholder="Enter meeting title"
               value={meetingTitle}
               onChange={(e) => setMeetingTitle(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "10px",
-                marginBottom: "20px",
-                border: "1px solid #ccc",
-                borderRadius: "5px",
-                color: "#000", // Black font
-              }}
+              style={{ width: "100%", padding: "8px", marginTop: "5px" }}
             />
           </div>
           <div style={{ marginBottom: "15px" }}>
-            <label
+            <label>Add team members</label>
+            <div
               style={{
-                display: "block",
-                marginBottom: "10px",
-                fontWeight: "bold",
-                color: "#000", // Black font
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "10px",
+                marginTop: "5px",
               }}
             >
-              Add team members
-            </label>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-              {teamMembers.map((member, index) => (
+              {teamMembers.map((member) => (
                 <button
-                  key={index}
+                  key={member.name}
                   onClick={() => toggleTeamMemberSelection(member.name)}
                   style={{
-                    padding: "10px",
+                    padding: "8px",
                     backgroundColor: selectedTeamMembers.includes(member.name)
                       ? "#3498db"
-                      : "#f1f1f1", // Highlight selected
-                    color: "#000", // Black font
+                      : "#f1f1f1",
+                    color: "#000",
                     borderRadius: "5px",
                     cursor: "pointer",
                   }}
@@ -359,29 +344,26 @@ const EventPage = () => {
               ))}
             </div>
           </div>
-
           <div style={{ marginBottom: "15px" }}>
-            <label
+            <label>Available Dates</label>
+            <div
               style={{
-                display: "block",
-                marginBottom: "10px",
-                fontWeight: "bold",
-                color: "#000", // Black font
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "10px",
+                marginTop: "5px",
               }}
             >
-              Available dates
-            </label>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-              {availableDates.map((date, index) => (
+              {availableDates.map((date) => (
                 <button
-                  key={index}
+                  key={date}
                   onClick={() => toggleMeetingDateSelection(date)}
                   style={{
-                    padding: "10px",
+                    padding: "8px",
                     backgroundColor: selectedMeetingDate.includes(date)
                       ? "#3498db"
-                      : "#f1f1f1", // Highlight selected
-                    color: "#000", // Black font
+                      : "#f1f1f1",
+                    color: "#000",
                     borderRadius: "5px",
                     cursor: "pointer",
                   }}
@@ -391,7 +373,6 @@ const EventPage = () => {
               ))}
             </div>
           </div>
-
           <button
             onClick={handleSubmit}
             style={{
@@ -405,7 +386,7 @@ const EventPage = () => {
               cursor: "pointer",
             }}
           >
-            Schedule Meeting
+            Submit
           </button>
           <button
             onClick={() => setShowPopup(false)}
