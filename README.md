@@ -1,4 +1,4 @@
-OrarioPerfetto
+**OrarioPerfetto**
 
 Our platform revolutionizes productivity with intuitive email summaries, urgency tagging, AI-driven to-dos, event prioritization, and smart scheduling—all in one seamless interface.
 In an age where managing communication, events, and tasks has become increasingly overwhelming, our innovative Personal Assistant (PA) platform offers a groundbreaking solution that blends simplicity, efficiency, and advanced technology. Designed to cater to the needs of modern users, our platform streamlines productivity through its intuitive features, ensuring that users can focus on what matters most.
